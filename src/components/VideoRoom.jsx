@@ -4,12 +4,12 @@ import VideoPlayer from "./VideoPlayer";
 
 const APP_ID = "975fe061fc2545ab9689211c11541c02";
 const TOKEN =
-  "007eJxTYGAOFTl3e6mbTO699S6iex547fhapRa7/rTlPna79rSpvs4KDJbmpmmpBmaGaclGpiamiUmWZhaWRoaGyYaGpiaGyQZGmT9XJzcEMjJ8kznFwAiFID4rQ05pSVomAwMAH9cfIA=="; // const TOKEN =
-const CHANNEL = "lutfi";
+  "007eJxTYFgeLZlhzHfh6Lbdic4P/eVWyxWuOHU00+7Df/nn5/lUEm0UGCzNTdNSDcwM05KNTE1ME5MszSwsjQwNkw0NTU0Mkw2MinzWJjcEMjJY1jxlYIRCEJ+ZobQ4hYEBAPUuHgI=";
+const CHANNEL = "usd";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
-const VideoRoom = () => {
+const VideoRoom = ({ setJoined }) => {
   const [users, setUsers] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
 
@@ -29,6 +29,17 @@ const VideoRoom = () => {
     setUsers((previousUsers) =>
       previousUsers.filter((u) => u.uid !== user.uid)
     );
+  };
+
+  const leaveRoom = () => {
+    setJoined(false);
+    for (let localTrack of localTracks) {
+      localTrack.stop();
+      localTrack.close();
+    }
+    client.off("user-published", handleUserJoined);
+    client.off("user-left", handleUserLeft);
+    client.unpublish(localTracks).then(() => client.leave());
   };
 
   useEffect(() => {
@@ -61,18 +72,27 @@ const VideoRoom = () => {
       }
       client.off("user-published", handleUserJoined);
       client.off("user-left", handleUserLeft);
-      client.unpublish(tracks).then(() => client.leave());
+      client.unpublish(localTracks).then(() => client.leave());
     };
   }, []);
 
   return (
     <div>
       VideoRoom
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 200px)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 200px)",
+          gap: "20px",
+        }}
+      >
         {users.map((user) => (
           <VideoPlayer key={user.uid} user={user} />
         ))}
       </div>
+      <button style={{ margin: "15px" }} onClick={() => leaveRoom()}>
+        Leave Room
+      </button>
     </div>
   );
 };

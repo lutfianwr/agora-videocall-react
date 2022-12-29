@@ -11,7 +11,7 @@ function App() {
 
       {!joined && <button onClick={() => setJoined(true)}>Join Room</button>}
 
-      {joined && <VideoRoom />}
+      {joined && <VideoRoom setJoined={setJoined} />}
     </div>
   );
 }
