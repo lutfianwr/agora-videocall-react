@@ -4,14 +4,20 @@ import VideoPlayer from "./VideoPlayer";
 
 const APP_ID = "975fe061fc2545ab9689211c11541c02";
 const TOKEN =
-  "007eJxTYFgeLZlhzHfh6Lbdic4P/eVWyxWuOHU00+7Df/nn5/lUEm0UGCzNTdNSDcwM05KNTE1ME5MszSwsjQwNkw0NTU0Mkw2MinzWJjcEMjJY1jxlYIRCEJ+ZobQ4hYEBAPUuHgI=";
+  "007eJxTYGCbk7T/cM+Os6W9WlqzjMT81K+rXErw1ig5HrzJz16qIleBwdLcNC3VwMwwLdnI1MQ0McnSzMLSyNAw2dDQ1MQw2cCowmdjckMgI8P9pjJGRgYIBPGZGUqLUxgYAIDPHJM=";
 const CHANNEL = "usd";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
 const VideoRoom = ({ setJoined }) => {
   const [users, setUsers] = useState([]);
+  const [myUid, setMyUid] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
+
+  const devices = AgoraRTC.getDevices();
+  const getDevices = () => {
+    console.log(devices);
+  };
 
   const handleUserJoined = async (user, mediaType) => {
     await client.subscribe(user, mediaType);
@@ -63,6 +69,7 @@ const VideoRoom = ({ setJoined }) => {
           },
         ]);
         client.publish(tracks);
+        setMyUid(uid);
       });
 
     return () => {
@@ -92,6 +99,9 @@ const VideoRoom = ({ setJoined }) => {
       </div>
       <button style={{ margin: "15px" }} onClick={() => leaveRoom()}>
         Leave Room
+      </button>
+      <button style={{ margin: "15px" }} onClick={() => console.log(devices)}>
+        get devices
       </button>
     </div>
   );
