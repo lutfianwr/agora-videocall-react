@@ -50,7 +50,7 @@ const Invitation = () => {
       </button>
       <button
         onClick={() => {
-          console.log(acceptCall());
+          console.log(acceptCall(), "delete");
         }}
       >
         answer
